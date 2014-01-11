@@ -1,3 +1,6 @@
+Scala starter pack for the Vindinium AI challenge
+
 ```
-sbt run -Dserver=http://24hcodebot.local
+sbt -Dserver=http://24hcodebot.local
+> run
 ```
