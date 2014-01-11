@@ -24,6 +24,7 @@ case class Input(
   game: Game,
   hero: Hero,
   token: String,
+  viewUrl: String,
   playUrl: String)
 
 object JsonFormat {

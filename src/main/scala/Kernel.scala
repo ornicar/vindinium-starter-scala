@@ -11,15 +11,17 @@ class BotActor(server: Server, shutdown: () ⇒ Unit) extends Actor {
 
     case Start ⇒ {
       val input = server.trainingAlone
+      println("Start! " + input.viewUrl)
       self ! input
     }
 
-    case Input(game, hero, _, playUrl) ⇒ {
-      if (game.finished) {
+    case input: Input ⇒ {
+      if (input.game.finished) {
         println("Game is finished, terminating!")
         context stop self
       }
       else {
+        import input._
         println(s"Turn ${game.turn}/${game.maxTurns}, I have ${hero.life} HP and ${hero.gold} gold")
         Thread sleep 200
         self ! server.playRandom(playUrl)
