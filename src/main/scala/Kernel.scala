@@ -36,16 +36,13 @@ class BotActor(server: Server, shutdown: () ⇒ Unit) extends Actor {
 
 class Kernel extends Bootable {
 
-  val server = new Server("http://24hcodebot.local/api")
-
   val system = ActorSystem("botkernel")
-
-  val bot = system.actorOf(
-    Props(new BotActor(server, shutdown)),
-    name = "bot")
+  val serverUrl = System.getProperty("server") + "/api"
 
   def startup = {
-    bot ! Start
+    system.actorOf(
+    Props(new BotActor(new Server(serverUrl), shutdown)),
+    name = "bot") ! Start
   }
 
   def shutdown = {
