@@ -26,3 +26,8 @@ case class Input(
   token: String,
   viewUrl: String,
   playUrl: String)
+
+object Dir extends Enumeration {
+  type Dir = Value
+  val Stay, North, South, East, West = Value
+}

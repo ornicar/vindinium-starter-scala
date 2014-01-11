@@ -5,12 +5,11 @@ import scalaj.http.{ Http, HttpOptions }
 
 final class Server(endpoint: String) {
 
-  def trainingAlone: Input = send(Http(s"$endpoint/training/alone"))
+  def trainingAlone: Input =
+    send(Http(s"$endpoint/training/alone"))
 
-  def playRandom(url: String): Input = {
-    val dir = scala.util.Random.shuffle(List("north", "south", "west", "east")).head
-    send(Http.post(url).params("dir" -> dir))
-  }
+  def move(url: String, dir: Dir.Value): Input =
+    send(Http.post(url).params("dir" -> dir.toString))
 
   def send(req: Http.Request): Input =
     Json.parse(req

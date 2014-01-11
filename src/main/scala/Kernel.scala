@@ -2,24 +2,25 @@ package bot
 
 object Main {
 
+  val bot: Bot = new RandomBot
+
   def main(args: Array[String]) = makeServer match {
-    case Left(error) ⇒ println(error)
-    case Right(server) ⇒ {
-      val input = server.trainingAlone
-      println("Start! " + input.viewUrl)
-      play(server, input)
-    }
+    case Left(error)   ⇒ println(error)
+    case Right(server) ⇒ start(server)
   }
 
-  @annotation.tailrec
-  def play(server: Server, input: Input) {
-    if (input.game.finished) {
-      println("\nGame is finished! " + input.viewUrl)
+  def start(server: Server) {
+    @annotation.tailrec
+    def move(input: Input) {
+      if (input.game.finished) println("\nGame is finished! " + input.viewUrl)
+      else {
+        print(".")
+        move(server.move(input.playUrl, bot move input))
+      }
     }
-    else {
-      print(".")
-      play(server, server.playRandom(input.playUrl))
-    }
+    val input = server.trainingAlone
+    println("Start! " + input.viewUrl)
+    move(input)
   }
 
   def makeServer = System.getProperty("server") match {
