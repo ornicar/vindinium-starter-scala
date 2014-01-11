@@ -3,6 +3,8 @@ package bot
 object Main {
 
   val bot: Bot = new RandomBot
+  // val bot: Bot = new LeftyBot
+  // val bot: Bot = new GreedyBot
 
   def main(args: Array[String]) = makeServer match {
     case Left(error)   ⇒ println(error)

@@ -17,16 +17,29 @@ final class Server(endpoint: String) {
       .option(HttpOptions.readTimeout(10000))
       .asString).as[Input]
 
+  // JSON parsing
+
   import play.api.libs.json._
   import play.api.libs.functional.syntax._
-  import Reads.constraints._
+  import scala.util.Try
 
   implicit val posReads = Json.reads[Pos]
-  def boardTransformer = (__ \ 'tiles).json.update(of[JsString] map {
-    case JsString(v) ⇒ JsArray(v.grouped(2).toList map JsString.apply)
-  })
-  implicit val boardReads = (__.json update boardTransformer) andThen Json.reads[Board]
+  implicit val boardReads = (
+    (__ \ "size").read[Int] and
+    (__ \ "tiles").read[String].map { _.grouped(2).toVector map parseTile }
+  )(Board.apply _)
   implicit val heroReads = Json.reads[Hero]
   implicit val gameReads = Json.reads[Game]
   implicit val inputReads = Json.reads[Input]
+
+  def parseTile(str: String): Tile = str.toList match {
+    case List(' ', ' ') ⇒ Tile.Air
+    case List('#', '#') ⇒ Tile.Wall
+    case List('[', ']') ⇒ Tile.Tavern
+    case List('$', x)   ⇒ Tile.Mine(int(x))
+    case List('@', x)   ⇒ Tile.Hero(int(x) getOrElse sys.error(s"Can't parse $str"))
+    case x              ⇒ sys error s"Can't parse $str"
+  }
+
+  private def int(c: Char): Option[Int] = Try(java.lang.Integer.parseInt(c.toString)).toOption
 }
