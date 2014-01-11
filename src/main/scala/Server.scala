@@ -15,5 +15,8 @@ final class Server(endpoint: String) {
   }
 
   private def parseInput(req: Http.Request) =
-    Json.parse(req.option(HttpOptions.connTimeout(10000)).asString).as[Input]
+    Json.parse(req
+      .option(HttpOptions.connTimeout(10000))
+      .option(HttpOptions.readTimeout(10000))
+      .asString).as[Input]
 }
