@@ -12,22 +12,29 @@ class RandomBot extends Bot {
   def move(input: Input) = scala.util.Random.shuffle(Dir.values.toList).head
 }
 
-class GreedyBot extends Bot {
+class ThirstyBot extends Bot {
 
   def move(input: Input) = {
-    val pathToBeer = ???
-    ???
+    import input._
+    val traverser = Traverser(game.board, hero.pos)
+    val path = traverser pathTo { pos ⇒
+      pos.neighbors map game.board.at exists { Some(Tile.Tavern) == }
+    }
+    // println(path)
+    North
   }
 }
 
 case class Traverser(board: Board, from: Pos) {
 
-  def pathToClosest(board: Board, from: Pos, goal: Option[Tile] ⇒ Boolean): Option[List[Pos]] = {
+  implicit class kc[A](a: A) { def pp = { println(a); a } }
+
+  def pathTo(goal: Pos ⇒ Boolean): Option[List[Pos]] = {
 
     def step(toVisit: List[Pos], visited: Set[Pos], path: List[Pos]): Option[List[Pos]] =
       toVisit match {
-        case Nil                              ⇒ None
-        case next :: _ if goal(board at next) ⇒ Some(path)
+        case Nil                     ⇒ None
+        case next :: _ if goal(next) ⇒ Some(path)
         case next :: rest ⇒ {
           val succ = (walkableFrom(next) -- visited -- rest).toList
           step(rest ++ succ, visited + next, next :: path)

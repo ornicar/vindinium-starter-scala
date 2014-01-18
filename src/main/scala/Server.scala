@@ -3,18 +3,32 @@ package bot
 import play.api.libs.json._
 import scalaj.http.{ Http, HttpOptions }
 
-final class Server(endpoint: String) {
+final class Server(
+  endpoint: String,
+  key: String) {
 
-  def trainingAlone: Input =
-    send(Http(s"$endpoint/training/alone"))
+  def arena: Input = send {
+    Http.post(s"$endpoint/arena").params("key" -> key)
+  }
 
-  def move(url: String, dir: Dir.Value): Input =
-    send(Http.post(url).params("dir" -> dir.toString))
+  def training(turns: Int, map: Option[String] = None): Input = send {
+    Http.post(s"$endpoint/training").params(
+      "key" -> key,
+      "turns" -> turns.toString,
+      "map" -> map.getOrElse(""))
+  }
+
+  def move(url: String, dir: Dir.Value): Input = send {
+    Http.post(url).params(
+      "dir" -> dir.toString)
+  }
+
+  private val timeout = 10 * 60 * 1000
 
   def send(req: Http.Request): Input =
     Json.parse(req
-      .option(HttpOptions.connTimeout(10000))
-      .option(HttpOptions.readTimeout(10000))
+      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.readTimeout(timeout))
       .asString).as[Input]
 
   // JSON parsing
