@@ -26,35 +26,28 @@ object Main {
   def arena(server: Server, games: Int) {
     @annotation.tailrec
     def oneGame(it: Int) {
-      @annotation.tailrec
-      def move(input: Input) {
-        if (!input.game.finished) {
-          print(".")
-          move(server.move(input.playUrl, bot move input))
-        }
-      }
-      println("Waiting for pairing...")
+      println(s"[$it/$games] Waiting for pairing...")
       val input = server.arena
-      println(s"Start arena game $it of $games" + input.viewUrl)
-      move(input)
-      println("\nFinished training game " + input.viewUrl)
+      println(s"[$it/$games] Start arena game ${input.viewUrl}")
+      step(server, input)
+      println(s"\n[$it/$games] Finished arena game ${input.viewUrl}")
       if (it < games) oneGame(it + 1)
     }
     oneGame(1)
   }
 
   def training(server: Server, boot: Server ⇒ Input) {
-    @annotation.tailrec
-    def move(input: Input) {
-      if (input.game.finished) println("\nFinished training game " + input.viewUrl)
-      else {
-        print(".")
-        move(server.move(input.playUrl, bot move input))
-      }
-    }
     val input = boot(server)
-    println("Start training game " + input.viewUrl)
-    move(input)
+    println("Training game " + input.viewUrl)
+    step(server, input)
+  }
+
+  @annotation.tailrec
+  def step(server: Server, input: Input) {
+    if (!input.game.finished) {
+      print(".")
+      step(server, server.move(input.playUrl, bot move input))
+    }
   }
 
   def makeServer = (
