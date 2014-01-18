@@ -9,7 +9,10 @@ trait Bot {
 
 class RandomBot extends Bot {
 
-  def move(input: Input) = scala.util.Random.shuffle(Dir.values.toList).head
+  def move(input: Input) = {
+    val dir = Dir.values.toVector(scala.util.Random.nextInt(5))
+    dir
+  }
 }
 
 class ThirstyBot extends Bot {
