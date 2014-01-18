@@ -15,5 +15,5 @@ object VindiniumBot extends Build {
         "org.scalaj" %% "scalaj-http" % "0.3.12"
       ),
       scalacOptions ++= Seq("-language:_", "-deprecation", "-unchecked"))
-  )
+  ).settings(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 }
