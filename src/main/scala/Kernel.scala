@@ -51,10 +51,9 @@ object Main {
   }
 
   def makeServer = (
-    System.getProperty("server"),
+    Option(System.getProperty("server")) getOrElse "http://vindinium.jousse.org",
     System.getProperty("key")
   ) match {
-      case (null, _)  ⇒ Left("Specify the server url with -Dserver=http://server-url.org")
       case (_, null)  ⇒ Left("Specify the user key with -Dkey=mySecretKey")
       case (url, key) ⇒ Right(new Server(url + "/api", key))
     }
