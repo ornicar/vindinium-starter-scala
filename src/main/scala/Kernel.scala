@@ -30,13 +30,7 @@ object Main {
       println(s"[$it/$games] Waiting for pairing...")
       val input = server.arena
       println(s"[$it/$games] Start arena game ${input.viewUrl}")
-      try {
-        step(server, input)
-      }
-      catch {
-        case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
-        case e: Exception                 ⇒ println(s"\n$e")
-      }
+      steps(server, input)
       println(s"\n[$it/$games] Finished arena game ${input.viewUrl}")
       if (it < games) oneGame(it + 1)
     }
@@ -46,7 +40,17 @@ object Main {
   def training(server: Server, boot: Server ⇒ Input) {
     val input = boot(server)
     println("Training game " + input.viewUrl)
-    step(server, input)
+    steps(server, input)
+  }
+
+  def steps(server: Server, input: Input) {
+    try {
+      step(server, input)
+    }
+    catch {
+      case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
+      case e: Exception                 ⇒ println(s"\n$e")
+    }
   }
 
   @annotation.tailrec
