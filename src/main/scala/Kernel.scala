@@ -2,8 +2,8 @@ package bot
 
 object Main {
 
-  // val bot: Bot = new RandomBot
-  val bot: Bot = new SlowBot
+  val bot: Bot = new RandomBot
+  // val bot: Bot = new SlowBot
   // val bot: Bot = new LeftyBot
   // val bot: Bot = new ThirstyBot
 
