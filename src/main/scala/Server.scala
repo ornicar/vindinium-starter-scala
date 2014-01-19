@@ -27,7 +27,7 @@ final class Server(
 
   def send(req: Http.Request): Input =
     Json.parse(req
-      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.connTimeout(3000))
       .option(HttpOptions.readTimeout(timeout))
       .asString).as[Input]
 

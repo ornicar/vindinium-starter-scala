@@ -34,7 +34,8 @@ object Main {
         step(server, input)
       }
       catch {
-        case e: scalaj.http.HttpException ⇒ println(s"[${e.code}] ${e.body}")
+        case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
+        case e: Exception                 ⇒ println(s"\n$e")
       }
       println(s"\n[$it/$games] Finished arena game ${input.viewUrl}")
       if (it < games) oneGame(it + 1)
