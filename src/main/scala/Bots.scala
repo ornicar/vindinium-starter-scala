@@ -2,6 +2,7 @@ package bot
 
 import Dir._
 import Tile._
+import scala.util.Random
 
 trait Bot {
   def move(input: Input): Dir
@@ -10,8 +11,15 @@ trait Bot {
 class RandomBot extends Bot {
 
   def move(input: Input) = {
-    val dir = Dir.values.toVector(scala.util.Random.nextInt(5))
+    val dir = Dir.values.toVector(Random.nextInt(5))
     dir
+  }
+}
+class SlowBot extends RandomBot {
+
+  override def move(input: Input) = {
+    if (Random.nextInt(20) == 0) Thread.sleep(2000)
+    super.move(input)
   }
 }
 
