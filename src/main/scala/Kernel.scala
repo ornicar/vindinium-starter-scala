@@ -30,7 +30,12 @@ object Main {
       println(s"[$it/$games] Waiting for pairing...")
       val input = server.arena
       println(s"[$it/$games] Start arena game ${input.viewUrl}")
-      step(server, input)
+      try {
+        step(server, input)
+      }
+      catch {
+        case e: scalaj.http.HttpException ⇒ println(s"[${e.code}] ${e.body}")
+      }
       println(s"\n[$it/$games] Finished arena game ${input.viewUrl}")
       if (it < games) oneGame(it + 1)
     }
