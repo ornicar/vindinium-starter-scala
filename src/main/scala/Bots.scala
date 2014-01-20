@@ -1,8 +1,8 @@
 package bot
 
 import Dir._
-import Tile._
 import scala.util.Random
+import Tile._
 
 trait Bot {
   def move(input: Input): Dir
@@ -11,14 +11,15 @@ trait Bot {
 class RandomBot extends Bot {
 
   def move(input: Input) = {
-    val dir = Dir.values.toVector(Random.nextInt(5))
-    dir
-  }
+    Random.shuffle(List(Dir.North, Dir.South, Dir.East, Dir.West)) find { dir ⇒
+      input.game.board at input.hero.pos.to(dir) exists (Wall!=)
+    }
+  } getOrElse Dir.Stay
 }
 class SlowBot extends RandomBot {
 
   override def move(input: Input) = {
-    if (Random.nextInt(20) == 0) Thread.sleep(2000)
+    if (Random.nextInt(200) == 0) Thread.sleep(1100)
     super.move(input)
   }
 }
