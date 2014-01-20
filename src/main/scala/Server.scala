@@ -23,7 +23,7 @@ final class Server(
       "dir" -> dir.toString)
   }
 
-  private val timeout = 10 * 60 * 1000
+  private val timeout = 30 * 60 * 1000
 
   def send(req: Http.Request): Input =
     Json.parse(req
