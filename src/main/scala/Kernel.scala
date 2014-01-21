@@ -31,18 +31,28 @@ object Main {
       println(s"\n[$it/$games] Finished arena game ${input.viewUrl}")
       if (it < games) oneGame(it + 1)
     }
-    oneGame(1)
+    failsafe {
+      oneGame(1)
+    }
   }
 
   def training(server: Server, boot: Server ⇒ Input) {
-    val input = boot(server)
-    println("Training game " + input.viewUrl)
-    steps(server, input)
+    failsafe {
+      val input = boot(server)
+      println("Training game " + input.viewUrl)
+      steps(server, input)
+    }
   }
 
   def steps(server: Server, input: Input) {
-    try {
+    failsafe {
       step(server, input)
+    }
+  }
+
+  def failsafe(action: ⇒ Unit) {
+    try {
+      action
     }
     catch {
       case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
