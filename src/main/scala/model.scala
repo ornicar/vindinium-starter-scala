@@ -43,6 +43,8 @@ case class Hero(
   pos: Pos,
   life: Int,
   gold: Int,
+  mineCount: Int,
+  spawnPos: Pos,
   crashed: Boolean)
 
 case class Game(
