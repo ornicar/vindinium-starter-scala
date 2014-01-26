@@ -45,7 +45,10 @@ case class Hero(
   gold: Int,
   mineCount: Int,
   spawnPos: Pos,
-  crashed: Boolean)
+  crashed: Boolean) {
+
+  override def toString = s"Hero $id $pos life:$life mine:$mineCount gold:$gold"
+  }
 
 case class Game(
   id: String,

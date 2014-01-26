@@ -41,6 +41,7 @@ object Main {
       val input = boot(server)
       println("Training game " + input.viewUrl)
       steps(server, input)
+      println(s"\nFinished training game ${input.viewUrl}")
     }
   }
 
