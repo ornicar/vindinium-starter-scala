@@ -23,13 +23,13 @@ From sbt, run:
 You can now run the application without sbt:
 
 ```
-java -Dkey=secretKey -jar target/scala-2.10/vindinium-bot_2.10-0.1-one-jar.jar arena 3
+java -Dkey=mySecretKey -jar target/scala-2.10/vindinium-bot_2.10-0.1-one-jar.jar arena 3
 ```
 
 A bash alias can make it prettier:
 
 ```
-alias vindinium="java -Dkey=rmr5amdf -jar target/scala-2.10/vindinium-bot_2.10-0.1-one-jar.jar"
+alias vindinium="java -Dkey=mySecretKey -jar target/scala-2.10/vindinium-bot_2.10-0.1-one-jar.jar"
 ```
 
 You can now run your bot like that:
