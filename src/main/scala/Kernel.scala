@@ -1,8 +1,14 @@
 package bot
 
+import Dir._
+import scala.util.{Success, Failure}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+
 object Main {
 
   val bot: Bot = new RandomBot
+  val semaphore = new java.util.concurrent.Semaphore(0, true)
 
   def main(args: Array[String]) = makeServer match {
     case Left(error) ⇒ println(error)
@@ -47,27 +53,35 @@ object Main {
 
   def steps(server: Server, input: Input) {
     failsafe {
-      step(server, input)
-    }
-  }
+       step(server, input)
+       semaphore.acquire
+     }
+   }
 
-  def failsafe(action: ⇒ Unit) {
-    try {
-      action
-    }
-    catch {
-      case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
-      case e: Exception                 ⇒ println(s"\n$e")
-    }
-  }
+   def failsafe(action: ⇒ Unit) {
+     try {
+       action
+     }
+     catch {
+       case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
+       case e: Exception                 ⇒ println(s"\n$e")
+     }
+   }
 
-  @annotation.tailrec
-  def step(server: Server, input: Input) {
+   def step(server: Server, input: Input): Unit = failsafe {
     if (!input.game.finished) {
       print(".")
-      step(server, server.move(input.playUrl, bot move input))
+      (bot move input) onComplete {
+        case Success(newDir) ⇒  { step(server, server.move(input.playUrl, newDir)) }
+        case Failure(t)      ⇒  {
+          println("An error occurred: " + t.getMessage)
+          semaphore.release
+        }
+      }
+    } else {
+      semaphore.release
     }
-  }
+   }
 
   def makeServer = (
     Option(System.getProperty("server")) getOrElse "http://vindinium.org/",
