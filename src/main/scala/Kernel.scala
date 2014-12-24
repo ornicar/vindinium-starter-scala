@@ -69,7 +69,7 @@ object Main {
   def step(server: Server, input: Input) {
     if (!input.game.finished) {
       print(".")
-      step(server, server.move(input.playUrl, Await.result(bot move input, 60.minutes)))
+      step(server, server.move(input.playUrl, Await.result(bot move input, 1.second)))
     }
   }
 
