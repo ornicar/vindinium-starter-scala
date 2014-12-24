@@ -1,5 +1,9 @@
 package bot
 
+import scala.concurrent.Await
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
 object Main {
 
   val bot: Bot = new RandomBot
@@ -65,7 +69,7 @@ object Main {
   def step(server: Server, input: Input) {
     if (!input.game.finished) {
       print(".")
-      step(server, server.move(input.playUrl, bot move input))
+      step(server, server.move(input.playUrl, Await.result(bot move input, 1.second)))
     }
   }
 
