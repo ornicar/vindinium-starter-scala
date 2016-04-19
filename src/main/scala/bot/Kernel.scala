@@ -1,10 +1,13 @@
 package bot
 
-object Main {
+import scala.Left
+import scala.Right
+
+object Main extends App {
 
   val bot: Bot = new RandomBot
 
-  def main(args: Array[String]) = makeServer match {
+  makeServer match {
     case Left(error) ⇒ println(error)
     case Right(server) ⇒ args match {
       case Array() ⇒
@@ -54,10 +57,8 @@ object Main {
   def failsafe(action: ⇒ Unit) {
     try {
       action
-    }
-    catch {
-      case e: scalaj.http.HttpException ⇒ println(s"\n[${e.code}] ${e.body}")
-      case e: Exception                 ⇒ println(s"\n$e")
+    } catch {
+      case e: Exception ⇒ e.printStackTrace()
     }
   }
 
@@ -71,8 +72,7 @@ object Main {
 
   def makeServer = (
     Option(System.getProperty("server")) getOrElse "http://vindinium.org/",
-    System.getProperty("key")
-  ) match {
+    System.getProperty("key")) match {
       case (_, null)  ⇒ Left("Specify the user key with -Dkey=mySecretKey")
       case (url, key) ⇒ Right(new Server(url + "/api", key))
     }
